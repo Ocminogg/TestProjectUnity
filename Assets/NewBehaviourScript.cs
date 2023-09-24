@@ -8,19 +8,19 @@ public class MyClass
     public int j;
 }
 
-public class MyList
-{
-    private int[] m_array = new int[4];
-    public void Push(int i)
-    {
+//public class MyList
+//{
+//    private int[] m_array = new int[4];
+//    public void Push(int i)
+//    {
 
-    }
-    public void IndexOf(int item)
-    {
+//    }
+//    public void IndexOf(int item)
+//    {
 
-    }
+//    }
 
-}
+//}
 
 public class NewBehaviourScript : MonoBehaviour
 {
