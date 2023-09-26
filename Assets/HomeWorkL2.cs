@@ -36,8 +36,8 @@ public class MyList
 
     public MyList()
     {
-        Capacity = 4;
-        
+        //Capacity = 4;
+
     }
 
     public MyList(int capacity)
@@ -60,23 +60,47 @@ public class MyList
 
     public void Add(int item)
     {
-        m_array.Append(item);
+        //Меняем размер массива
+        Array.Resize(ref m_array, m_array.Length + 1);
+        //Записали новое число в конец массива
+        m_array[m_array.Length - 1] = item;
+        
+        Debug.Log("Добавили значение в массив " + item);
+        for (int i = 0; i < m_array.Length; ++i)
+        {
+            Debug.Log(m_array[i]);
+        }
+
+        Debug.Log("Закончили");
     }
 
     public void Insert(int index, int item)
     {
+        //Создаем пустую копию массива размером на один больше
         int[] m_arrayCopy = new int[m_array.Length + 1];
-                
-        for (int i = 0; i < m_array.Length; ++i)
+        //Заполняем m_arrayCopy до тех пор, пока не дойдем до нужного индекса
+        for (int i = 0; i < index+1; ++i)
         {
             if (i == index)
             {
-                m_arrayCopy.Append(item);                
+                m_arrayCopy[i] = item;
                 continue;
             }
-            m_arrayCopy.Append(m_array[i]);
+            m_arrayCopy[i] = m_array[i];
+        }
+        //Заполняем остальную часть массива начиная с индекса
+        for (int i = index; i < m_array.Length; ++i)
+        {            
+            m_arrayCopy[i+1] = m_array[i];
         }
         m_array = m_arrayCopy;
+
+        Debug.Log("Добавили значение в массив по индексу" + item);
+        for (int i = 0; i < m_array.Length; ++i)
+        {
+            Debug.Log(m_array[i]);
+        }
+        Debug.Log("Закончили");
         
     }
 
@@ -93,17 +117,34 @@ public class MyList
         //флаг для отслеживания удаления элемента, чтобы удалить только первое найденное вхождение
         bool flag = false;
         //поиск элемента для удаления и заполнение нового
+        //находим необходимое значение и останавливаем на нем цикл
+        int index = 0;
         for (int i = 0; i < m_array.Length; ++i)
         {
             if ((m_array[i] == item) & (flag == false))
             {
+                index = i;
                 flag = true;
-                continue;
+                break;
             }
-            m_arrayCopy.Append(m_array[i]);
+            m_arrayCopy[i] = m_array[i];
+        }
+        //Продолжаем цикл, но уже пропустив удаленное значение 
+        for (int i = index; i < m_array.Length-1; ++i)
+        {            
+            m_arrayCopy[i] = m_array[i+1];
         }
         m_array = m_arrayCopy;
+
+        Debug.Log("Выполнили команду Remove");
+        for (int i = 0; i < m_array.Length; ++i)
+        {
+            Debug.Log(m_array[i]);
+        }
+
         return flag;
+
+        
     }
 
     public void RemoveAt(int index)
@@ -117,12 +158,21 @@ public class MyList
             if ((m_array[i] == m_array[index]) & (flag == false))
             {
                 flag = true;
-                continue;
+                break;
             }
-            m_arrayCopy.Append(m_array[i]);
+            m_arrayCopy[i] = m_array[i];
+        }
+        for (int i = index; i < m_array.Length - 1; ++i)
+        {
+            m_arrayCopy[i] = m_array[i + 1];
         }
         m_array = m_arrayCopy;
 
+        Debug.Log("Выполнили команду RemoveAt");
+        for (int i = 0; i < m_array.Length; ++i)
+        {
+            Debug.Log(m_array[i]);
+        }
     }
 
     public bool Contains(int item)
@@ -150,10 +200,11 @@ public class HomeWorkL2 : MonoBehaviour
     void Start()
     {
         //List<MyList> list = new List<MyList>();
-        MyList myList = new MyList();
+        MyList myList = new MyList(0);
         myList.Add(1);
         myList.Add(5);
         myList.Insert(1, 3);
+        Debug.Log("Выполнили команды Add и Insert");
         for (int i = 0; i < myList.Count; ++i)
         {
             Debug.Log(myList[i]);
@@ -163,6 +214,7 @@ public class HomeWorkL2 : MonoBehaviour
         myList.Remove(3);
         myList.RemoveAt(0);
 
+        Debug.Log("Выполнили команды Remove и RemoveAt");
         for (int i = 0; i < myList.Count; ++i)
         {
             Debug.Log(myList[i]);
