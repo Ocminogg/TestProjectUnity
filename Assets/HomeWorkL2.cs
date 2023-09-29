@@ -9,62 +9,75 @@ using static UnityEditor.Progress;
 
 public class MyList
 {
-    private int[] m_array = new int[4];
+    private int[] m_array;
 
-    public int Count
+    public int Count { get; private set; }
+
+    public int Capacity
     {
         get
         {
             return m_array.Length;
         }
-        private set
-        {
-
-        }
-    }
-    public int Capacity
-    {
-        get
-        {
-            return 0;
-        }
         set
         {
-            
+            if (value > m_array.Length)
+            {
+                System.Array.Resize(ref m_array, value);
+            }
         }
     }
 
     public MyList()
     {
-        //Capacity = 4;
+        m_array = new int[4];
 
     }
 
     public MyList(int capacity)
     {
-        Capacity = capacity;
-        Array.Resize(ref m_array, capacity);//ѕод вопросом
+        m_array = new int[capacity];
     }
 
     public int this[int index]
     {
         get
         {
+            CheckIndexRange(index);
             return m_array[index];
         }
         set
         {
+            CheckIndexRange(index);
             m_array[index] = value;
         }
     }
 
+    private bool CheckIndexRange(int index)
+    {
+        if (index < 0 || index >= Count)
+            throw new ArgumentOutOfRangeException();
+
+        return true;
+    }
+    private void IncreaseCapacityIfNeed()
+    {
+        if (Count == Capacity)
+        {
+            Capacity *= 2;
+        }
+    }
     public void Add(int item)
     {
+        IncreaseCapacityIfNeed();
+
+        m_array[Count] = item;
+        Count++;
         //ћен€ем размер массива
-        Array.Resize(ref m_array, m_array.Length + 1);
+        //Array.Resize(ref m_array, m_array.Length + 1);
         //«аписали новое число в конец массива
-        m_array[m_array.Length - 1] = item;
-        
+        //m_array[m_array.Length - 1] = item;
+
         Debug.Log("ƒобавили значение в массив " + item);
         for (int i = 0; i < m_array.Length; ++i)
         {
@@ -76,24 +89,35 @@ public class MyList
 
     public void Insert(int index, int item)
     {
-        //—оздаем пустую копию массива размером на один больше
-        int[] m_arrayCopy = new int[m_array.Length + 1];
-        //«аполн€ем m_arrayCopy до тех пор, пока не дойдем до нужного индекса
-        for (int i = 0; i < index+1; ++i)
-        {
-            if (i == index)
-            {
-                m_arrayCopy[i] = item;
-                continue;
-            }
-            m_arrayCopy[i] = m_array[i];
-        }
-        //«аполн€ем остальную часть массива начина€ с индекса
+        IncreaseCapacityIfNeed();   
+        int t1 = m_array[index];
+        //—мещ€ем массив начина€ с индекса
         for (int i = index; i < m_array.Length; ++i)
-        {            
-            m_arrayCopy[i+1] = m_array[i];
+        {
+            int t2 = m_array[i + 1];
+            m_array[i+1] = t1;
+            t1 = t2;
         }
-        m_array = m_arrayCopy;
+        m_array[index] = item;
+        Count++;
+        ////—оздаем пустую копию массива размером на один больше
+        //int[] m_arrayCopy = new int[m_array.Length + 1];
+        ////«аполн€ем m_arrayCopy до тех пор, пока не дойдем до нужного индекса
+        //for (int i = 0; i < index+1; ++i)
+        //{
+        //    if (i == index)
+        //    {
+        //        m_arrayCopy[i] = item;
+        //        continue;
+        //    }
+        //    m_arrayCopy[i] = m_array[i];
+        //}
+        ////«аполн€ем остальную часть массива начина€ с индекса
+        //for (int i = index; i < m_array.Length; ++i)
+        //{            
+        //    m_arrayCopy[i+1] = m_array[i];
+        //}
+        //m_array = m_arrayCopy;
 
         Debug.Log("ƒобавили значение в массив по индексу" + item);
         for (int i = 0; i < m_array.Length; ++i)
@@ -106,7 +130,14 @@ public class MyList
 
     public int IndexOf(int item)
     {
-        Array.IndexOf(m_array, item);
+        for (int i = 0; i < Count; i++)
+        {
+            if (m_array[i] == item)
+            {
+                return i;
+            }
+        }
+        //Array.IndexOf(m_array, item);
         return -1;
     }
 

@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\NewBehaviourScript.cs" />
+    <Compile Include="Assets\CorrectListByTeacher.cs" />
     <Compile Include="Assets\HomeWorkL2.cs" />
   </ItemGroup>
   <ItemGroup>
