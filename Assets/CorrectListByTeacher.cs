@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class CorrectListByTeacher : MonoBehaviour
 {
-    public class MyList
+    public class MyList<T> : IEnumerable<T>
     {
-        private int[] m_array;
+        private T[] m_array;
         public int Count { get; private set; }
 
         public int Capacity
@@ -24,15 +25,15 @@ public class CorrectListByTeacher : MonoBehaviour
 
         public MyList()
         {
-            m_array = new int[4];
+            m_array = new T[4];
         }
 
         public MyList(int capacity)
         {
-            m_array = new int[capacity];
+            m_array = new T[capacity];
         }
 
-        public int this[int index]
+        public T this[int index]
         {
             get
             {
@@ -62,7 +63,7 @@ public class CorrectListByTeacher : MonoBehaviour
             }
         }
 
-        public void Add(int item)
+        public void Add(T item)
         {
             IncreaseCapacityIfNeed();
 
@@ -70,7 +71,7 @@ public class CorrectListByTeacher : MonoBehaviour
             Count++;
         }
 
-        public void Insert(int index, int item)
+        public void Insert(int index, T item)
         {
             if (index < 0 || index > Count)
             {
@@ -88,11 +89,11 @@ public class CorrectListByTeacher : MonoBehaviour
             m_array[index] = item;
         }
 
-        public int IndexOf(int item)
+        public int IndexOf(T item)
         {
             for (int i = 0; i < Count; i++)
             {
-                if (m_array[i] == item)
+                if (EqualityComparer<T>.Default.Equals(m_array[i], item))
                 {
                     return i;
                 }
@@ -101,7 +102,7 @@ public class CorrectListByTeacher : MonoBehaviour
             return -1;
         }
 
-        public bool Remove(int item)
+        public bool Remove(T item)
         {
             int index = IndexOf(item);
             if (index >= 0)
@@ -123,7 +124,7 @@ public class CorrectListByTeacher : MonoBehaviour
             }
         }
 
-        public bool Contains(int item)
+        public bool Contains(T item)
         {
             return IndexOf(item) >= 0;
         }
@@ -133,11 +134,61 @@ public class CorrectListByTeacher : MonoBehaviour
             System.Array.Clear(m_array, 0, m_array.Length);
             Count = 0;
         }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
     }
     // Start is called before the first frame update
     void Start()
-    {
-        
+    {        
+        MyList<int> myList = new MyList<int>(0);
+        myList.Capacity = 4;
+        myList.Add(1);
+        myList.Add(5);
+        myList.Insert(1, 3);
+        Debug.Log("Выполнили команды Add и Insert");
+        for (int i = 0; i < myList.Count; ++i)
+        {
+            Debug.Log(myList[i]);
+        }
+
+        myList.Capacity = 4;
+        myList.Remove(3);
+        myList.RemoveAt(0);
+
+        Debug.Log("Выполнили команды Remove и RemoveAt");
+        for (int i = 0; i < myList.Count; ++i)
+        {
+            Debug.Log(myList[i]);
+        }
+        Debug.Log("Типизировали MyList <object>");
+        MyList<object> myList2 = new MyList<object>(0);
+        myList2.Capacity = 4;
+        myList2.Add("111");
+        myList2.Add(555);
+        myList2.Insert(1, "333");
+        Debug.Log("Выполнили команды Add и Insert");
+        for (int i = 0; i < myList2.Count; ++i)
+        {
+            Debug.Log(myList2[i]);
+        }
+
+        myList2.Capacity = 4;
+        myList2.Remove("3");
+        myList2.RemoveAt(0);
+
+        Debug.Log("Выполнили команды Remove и RemoveAt");
+        for (int i = 0; i < myList2.Count; ++i)
+        {
+            Debug.Log(myList2[i]);
+        }
     }
 
     // Update is called once per frame
